@@ -1,5 +1,6 @@
 package com.proj.tree;
 
+import com.proj.tree.bean.Person;
 import com.proj.tree.main.TreeImpl;
 
 /**
@@ -18,13 +19,13 @@ public class App {
 		mytree.add("Rx2");
 		mytree.add("Rx4");
 
-		System.out.println("=======================String INORDER TRAVERSAL======================");
+		System.out.print("Inorder  \t->\t");
 		mytree.inorderDisplay();
-		System.out.println("=======================String PRE-ORDER TRAVERSAL======================");
+		System.out.print("Pre-order\t->\t");
 		mytree.preorderDisplay();
-		System.out.println("=======================String POST-ORDER TRAVERSAL======================");
+		System.out.print("Postorder\t->\t");
 		mytree.postorderDisplay();
-
+		System.out.println("No of elements in tree\t" + mytree.getLength());
 		System.out.println("------------------------------------------------------------------------");
 
 		TreeImpl<Integer> intTree = new TreeImpl<Integer>();
@@ -39,12 +40,32 @@ public class App {
 		intTree.add(32);
 		intTree.add(38);
 
-		System.out.println("=======================INORDER TRAVERSAL======================");
+		System.out.print("Inorder  \t->\t");
 		intTree.inorderDisplay();
-		System.out.println("=======================PRE-ORDER TRAVERSAL======================");
+		System.out.print("Pre-order\t->\t");
 		intTree.preorderDisplay();
-		System.out.println("=======================POSTORDER TRAVERSAL======================");
+		System.out.print("Postorder\t->\t");
 		intTree.postorderDisplay();
+		System.out.println("No of elements in tree\t" + intTree.getLength());
+		TreeImpl<Person> personTree = new TreeImpl<Person>();
+		personTree.add(new Person("RootElement", "Nasik"));
+		personTree.add(new Person("Left3", "Mumbai"));
+		personTree.add(new Person("Left2", "Pune"));
+		personTree.add(new Person("Left4", "London"));
+		personTree.add(new Person("Rx3", "Harrow"));
+		personTree.add(new Person("Rx2", "Milan"));
+		personTree.add(new Person("Rx4", "Glasgow"));
 
+		System.out.println("------------------------------------------------------------------------");
+		System.out.print("Inorder  \t->\t");
+		personTree.inorderDisplay();
+		System.out.print("Pre-order\t->\t");
+		personTree.preorderDisplay();
+		System.out.print("Postorder\t->\t");
+		personTree.postorderDisplay();
+		System.out.println("No of elements in tree\t" + personTree.getLength());
+
+		Person p = personTree.search(new Person("gfg", "Nasik"));
+		System.out.println(p != null ? "Element \"" + p.getName() + "\" is present in the tree" : "Element not found");
 	}
 }

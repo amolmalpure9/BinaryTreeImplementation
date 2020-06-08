@@ -19,7 +19,7 @@ package com.proj.tree.main;
 
 import java.util.Stack;
 
-class Node<T> implements Comparable<Node> {
+class Node<T extends Comparable<T>> {
 
 	private Node<T> leftNode;
 	private Node<T> righNode;
@@ -54,21 +54,22 @@ class Node<T> implements Comparable<Node> {
 	public void setData(T data) {
 		this.data = data;
 	}
-
-	public int compareTo(Node o) {
-		return this.getData().toString().compareTo(o.getData().toString());
-	}
-
 }
 
-public class TreeImpl<T> {
+public class TreeImpl<T extends Comparable<T>> {
 
+	private int length = 0;
 	private Node<T> rootNode;
 	private Stack<Node> displayStack = new Stack<Node>();
 	private Stack<Node> pushedAgainStack = new Stack<Node>();
+	private Stack<Node> searchStack = new Stack<Node>();
 
 	public TreeImpl() {
 		rootNode = null;
+	}
+
+	public int getLength() {
+		return length;
 	}
 
 	public void add(T data) throws Exception {
@@ -77,12 +78,14 @@ public class TreeImpl<T> {
 			throw new Exception("Null is not a valid data");
 		}
 		if (rootNode == null) {
+			length++;
 			rootNode = new Node();
 			rootNode.setData(data);
 		} else {
 			Node<T> newNode = new Node();
 			newNode.setData(data);
-			if (newNode.compareTo(rootNode) < 0) {
+			length++;
+			if (newNode.getData().compareTo(rootNode.getData()) < 0) {
 				traverseLeftAndAdd(rootNode, newNode);
 			} else {
 				traverseRightAndAdd(rootNode, newNode);
@@ -94,7 +97,7 @@ public class TreeImpl<T> {
 	private void traverseLeftAndAdd(Node<T> tempRootNode, Node<T> newNode) {
 		if (null != tempRootNode.getLeftNode()) {
 			tempRootNode = tempRootNode.getLeftNode();
-			if (newNode.compareTo(tempRootNode) < 0) {
+			if (newNode.getData().compareTo(tempRootNode.getData()) < 0) {
 				traverseLeftAndAdd(tempRootNode, newNode);
 			} else {
 				traverseRightAndAdd(tempRootNode, newNode);
@@ -107,7 +110,7 @@ public class TreeImpl<T> {
 	private void traverseRightAndAdd(Node<T> tempRootNode, Node<T> newNode) {
 		if (null != tempRootNode.getRighNode()) {
 			tempRootNode = tempRootNode.getRighNode();
-			if (newNode.compareTo(tempRootNode) < 0) {
+			if (newNode.getData().compareTo(tempRootNode.getData()) < 0) {
 				traverseLeftAndAdd(tempRootNode, newNode);
 			} else {
 				traverseRightAndAdd(tempRootNode, newNode);
@@ -214,5 +217,41 @@ public class TreeImpl<T> {
 				System.out.print(nodeEle.getData() + " ");
 			}
 		} while (displayStack.size() > 0);
+	}
+
+	public T search(T data) {
+
+		return rootNode != null
+				? (rootNode.getData().compareTo(data) == 0 ? rootNode.getData() : traverseTreeAndSearch(data, rootNode))
+				: null;
+	}
+
+	private T traverseTreeAndSearch(T data, Node<T> newRootNode) {
+		T nodeToReturn = null;
+
+		Node<T> tempNode = newRootNode.getLeftNode();
+		while (tempNode != null) {
+			if (tempNode.getData().compareTo(data) == 0) {
+				nodeToReturn = tempNode.getData();
+				return nodeToReturn;
+			}
+			searchStack.push(tempNode);
+			tempNode = tempNode.getLeftNode();
+		}
+
+		do {
+			Node<T> nodeEle = searchStack.pop();
+			// System.out.print(nodeEle.getData() + " ");
+			if (null != nodeEle.getRighNode()) {
+				if (null != nodeEle.getRighNode().getData() && nodeEle.getRighNode().getData().compareTo(data) == 0) {
+					nodeToReturn = nodeEle.getRighNode().getData();
+					return nodeToReturn;
+				}
+				searchStack.push(nodeEle.getRighNode());
+				traverseTreeAndSearch(data, nodeEle.getRighNode());
+			}
+		} while (searchStack.size() > 0);
+
+		return nodeToReturn;
 	}
 }
